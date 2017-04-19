@@ -3,18 +3,67 @@
  */
 
 import React, { Component } from 'react'
-import { View, Text, StatusBar, TouchableHighlight, StyleSheet, Image } from 'react-native'
+import { View, Text, StatusBar, TouchableHighlight, StyleSheet, Image, ListView } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Util from './Util'
 import { SearchBar } from 'react-native-elements'
+import Carousel from 'react-native-looped-carousel';
+import MovieSection from './MovieSection'
+
 
 class Home extends Component{
 	
 	constructor() {
 		super()
+		var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 		this.state = {
-			width: Util.size.width
+			width: Util.size.width,
+			dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 4', 'row 5', 'row 6', 'row 7', 'row 8', 'row 9'
+			]),
+			headerSize:{
+				height:180,
+				width:Util.size.width,
+			},
+			sectionSize:{
+				height:360,
+				width:Util.size.width,
+			}
 		}
+	}
+	
+	_getListHeaderCarousel = () => {
+		return (
+			<View style={this.state.headerSize}>
+				<Carousel
+		          delay={5000}
+		          style={this.state.headerSize}
+		          autoplay
+		          onAnimateNextPage={(p) => console.log(p)}
+		        >
+		          <View style={[this.state.headerSize]}>
+		          	<Image
+		          		style={[this.state.headerSize]}
+		          		source={require('./images/index1.jpg')}
+		          		resizeMode='stretch'
+		          	/>
+		          </View>
+		          <View style={[this.state.headerSize]}>
+		          	<Image
+		          		style={[this.state.headerSize]}
+		          		source={require('./images/index2.jpg')}
+		          		resizeMode='stretch'
+		          	/>
+		          </View>
+		          <View style={[this.state.headerSize]}>
+		          	<Image
+		          		style={[this.state.headerSize]}
+		          		source={require('./images/index3.jpg')}
+		          		resizeMode='stretch'
+		          	/>
+		          </View>
+		        </Carousel>
+			</View>
+		)
 	}
 
 	render() {
@@ -35,7 +84,14 @@ class Home extends Component{
 		        	<View style={{height:30, margin:5, marginLeft:10, marginTop:7}}>
 		        		<Icon color={'white'} name='history' size={20} />
 		        	</View>
-		        	
+		        </View>
+		        <View style={{width:this.state.width}}>
+		        	<ListView
+				      dataSource={this.state.dataSource}
+				      renderHeader = { () => this._getListHeaderCarousel() }
+				      renderRow={(rowData) => <MovieSection data={rowData} viewSize = {this.state.sectionSize} ></MovieSection>}
+			    	>
+				    </ListView>
 		        </View>
 		      </View>
 			)
