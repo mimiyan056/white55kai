@@ -9,8 +9,16 @@ import Home from './Home'
 import ClassSearch from './ClassSearch'
 import Rank from './Rank'
 import More from './More'
+import { StackNavigator } from 'react-navigation'
+import MoviePlay from './MoviePlay'
 
 class App extends Component {
+	
+	static navigationOptions = {
+	    header: ({ state, setParams }) => ({
+	      visible:false //隐藏header
+	    }),
+	}
 	
 	constructor() {
 		super()
@@ -25,6 +33,7 @@ class App extends Component {
 	
 	render() {
 		const { selectedTab } = this.state
+		const { navigate } = this.props.navigation
 		return (
 			<Tabs>
 				
@@ -36,7 +45,7 @@ class App extends Component {
 					renderIcon={() => <Icon containerStyle={{justifyContent: 'center', alignItems: 'center', marginTop: 12}} color={'#5e6977'} name='whatshot' size={30} />}
 					renderSelectedIcon={() => <Icon color={'#d45f58'} name='whatshot' size={30} />}
 					onPress={() => this.changeTab('home')}>
-					<Home />
+					<Home navigate={navigate} />
 				</Tab>
 				<Tab hidesTabTouch
 					titleStyle={{fontWeight: 'bold', fontSize: 10}}
@@ -73,4 +82,12 @@ class App extends Component {
 	}
 }
 
-export default App
+//进行导航的注册
+const HomeApp = StackNavigator({
+  App : { screen: App },
+  MoviePlay : { screen: MoviePlay}
+
+});
+
+
+export default HomeApp

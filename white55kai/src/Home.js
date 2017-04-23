@@ -3,16 +3,21 @@
  */
 
 import React, { Component } from 'react'
-import { View, Text, StatusBar, TouchableHighlight, StyleSheet, Image, ListView } from 'react-native'
+import { View, Text, StatusBar, TouchableHighlight, StyleSheet, Image, ListView, FlatList } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import Util from './Util'
 import { SearchBar } from 'react-native-elements'
 import Carousel from 'react-native-looped-carousel';
 import MovieSection from './MovieSection'
+import axios  from  'axios'
+
 
 
 class Home extends Component{
 	
+
+  
+  
 	constructor() {
 		super()
 		var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -27,43 +32,112 @@ class Home extends Component{
 			sectionSize:{
 				height:360,
 				width:Util.size.width,
-			}
+			},
+			carouselData:[],
 		}
 	}
 	
+	
+	_getFetchData = () => {
+	    axios.get('http://api.29pai.com/xnw/homepage?p=ios&n=1&p=ios', {
+		    headers:  {
+		    	'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+		    	'Accept-Encoding' : 'gzip, deflate, sdch',
+		    	'Accept-Language'  : 'zh-CN,zh;q=0.8',
+		    	'Connection': 'keep-alive',
+		    	'Host' : 'api.29pai.com',
+		    	'Upgrade-Insecure-Requests' : '1',
+		    	'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36',
+		    }
+		})
+		.then((response) => {
+			if(response.data.toString() == '[object Object]'){
+				this.setState({carouselData:response.data.data.run})
+			}
+		})
+		  .catch(function (error) {
+		    console.log(error);
+		});
+
+	}
+	
+	_onPressButton = () => {
+		console.warn(1);
+	}
+	
+	componentDidMount(){
+		this._getFetchData();
+	}
+	
+	
 	_getListHeaderCarousel = () => {
-		return (
-			<View style={this.state.headerSize}>
-				<Carousel
-		          delay={5000}
-		          style={this.state.headerSize}
-		          autoplay
-		          onAnimateNextPage={(p) => console.log(p)}
-		        >
-		          <View style={[this.state.headerSize]}>
-		          	<Image
-		          		style={[this.state.headerSize]}
-		          		source={require('./images/index1.jpg')}
-		          		resizeMode='stretch'
-		          	/>
-		          </View>
-		          <View style={[this.state.headerSize]}>
-		          	<Image
-		          		style={[this.state.headerSize]}
-		          		source={require('./images/index2.jpg')}
-		          		resizeMode='stretch'
-		          	/>
-		          </View>
-		          <View style={[this.state.headerSize]}>
-		          	<Image
-		          		style={[this.state.headerSize]}
-		          		source={require('./images/index3.jpg')}
-		          		resizeMode='stretch'
-		          	/>
-		          </View>
-		        </Carousel>
-			</View>
-		)
+		if(this.state.carouselData.length <=0 ){
+			return (
+				<View></View>
+			)
+		}else{
+			return (
+				<View style={this.state.headerSize}>
+					<Carousel
+			          delay={5000}
+			          style={this.state.headerSize}
+			          autoplay
+			        >
+					<TouchableHighlight  
+					  onPressIn={() => console.log("onPressIn")}
+					  onPressOut={() => console.log("onPressOut")}
+					  onPress={() => this.props.navigate('MoviePlay')}
+					  onLongPress={() => console.log("onLongPress")}
+					  >
+					  <Image
+						          		style={[this.state.headerSize]}
+						          		source={{uri: this.state.carouselData[0].img}}
+						          		resizeMode='stretch'
+						          	/>
+					</TouchableHighlight>  
+					<TouchableHighlight  
+					  onPressIn={() => console.log("onPressIn")}
+					  onPressOut={() => console.log("onPressOut")}
+					  onPress={() => console.log("onPress")}
+					  onLongPress={() => console.log("onLongPress")}
+					  >
+					  <Image
+						          		style={[this.state.headerSize]}
+						          		source={{uri: this.state.carouselData[1].img}}
+						          		resizeMode='stretch'
+						          	/>
+					</TouchableHighlight>  
+					<TouchableHighlight  
+					  onPressIn={() => console.log("onPressIn")}
+					  onPressOut={() => console.log("onPressOut")}
+					  onPress={() => console.log("onPress")}
+					  onLongPress={() => console.log("onLongPress")}
+					  >
+					  <Image
+						          		style={[this.state.headerSize]}
+						          		source={{uri: this.state.carouselData[2].img}}
+						          		resizeMode='stretch'
+						          	/>
+					</TouchableHighlight>  
+					<TouchableHighlight  
+					  onPressIn={() => console.log("onPressIn")}
+					  onPressOut={() => console.log("onPressOut")}
+					  onPress={() => console.log("onPress")}
+					  onLongPress={() => console.log("onLongPress")}
+					  >
+					  <Image
+						          		style={[this.state.headerSize]}
+						          		source={{uri: this.state.carouselData[3].img}}
+						          		resizeMode='stretch'
+						          	/>
+					</TouchableHighlight>  
+			        </Carousel>
+				</View>
+			)
+		}
+		
+			
+
 	}
 
 	render() {
@@ -98,6 +172,7 @@ class Home extends Component{
 	}
 	
 }
+
 
 
 styles = StyleSheet.create({
